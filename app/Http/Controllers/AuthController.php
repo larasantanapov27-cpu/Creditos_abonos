@@ -33,9 +33,17 @@ class AuthController extends Controller
 
     public function authenticate(Request $r)
     {
-        $d = $r->validate(['username' => 'required|string|max:50', 'password' => 'required|string']);
+        // Se cambia 'username' por 'email'
+        $d = $r->validate([
+            'email' => 'required|email', 
+            'password' => 'required|string'
+        ]);
+        
+        // Auth::attempt ahora valida el 'email' contra la base de datos
         if (! Auth::attempt($d)) {
-            return back()->withErrors(['username' => 'El usuario o la contraseña no son correctos.'])->onlyInput('username');
+            return back()->withErrors([
+                'email' => 'El correo electrónico o la contraseña no son correctos.'
+            ])->onlyInput('email');
         }
         $r->session()->regenerate();
 

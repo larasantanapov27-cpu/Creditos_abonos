@@ -48,7 +48,7 @@
             <p class="text-muted">Ingresa tus datos para continuar.</p>
             <form action="{{ route('login.store') }}" method="POST" class="mt-4">
                 @csrf
-                <x-field name="username" label="Nombre de usuario" autocomplete="username" maxlength="50" autofocus/>
+                <x-field name="email" type="email" label="Correo electrónico" autocomplete="email" maxlength="255" autofocus/>
                 <div class="password-field">
                     <x-field name="password" label="Contraseña" type="password" autocomplete="current-password"/>
                     <button class="password-toggle" type="button" data-password="password" aria-pressed="false">
