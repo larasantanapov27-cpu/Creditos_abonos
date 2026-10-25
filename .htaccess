@@ -1,0 +1,10 @@
+# El proyecto vive bajo htdocs; solo public debe ser accesible por HTTP.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^$ public/ [R=302,L]
+    RewriteRule ^(?!public(?:/|$)).+ - [F,L]
+</IfModule>
+
+<FilesMatch "^(\.env.*|composer\.(json|lock)|artisan|phpunit\.xml|package.*\.json|vite\.config\.js)$">
+    Require all denied
+</FilesMatch>
