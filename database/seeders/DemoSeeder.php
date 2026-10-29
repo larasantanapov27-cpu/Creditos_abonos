@@ -19,6 +19,17 @@ class DemoSeeder extends Seeder
             'email' => 'demo@example.test',
             'password' => 'DemoLocal2026!',
         ]);
+        $previousUser = auth()->user();
+        auth()->setUser($u);
+        try {
+            $this->seedForUser($u);
+        } finally {
+            $previousUser ? auth()->setUser($previousUser) : auth()->forgetUser();
+        }
+    }
+
+    private function seedForUser(User $u): void
+    {
         DB::table('estados')->updateOrInsert(['nombre_estado' => 'Estado de México'], []);
         $e = DB::table('estados')->where('nombre_estado', 'Estado de México')->value('id_estado');
         DB::table('municipios')->updateOrInsert(['nombre_municipio' => 'Valle de Bravo', 'id_estado' => $e], []);

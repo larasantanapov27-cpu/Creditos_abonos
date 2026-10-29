@@ -14,7 +14,8 @@ class CreditoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_cliente' => 'required|exists:registro_clientes,id_cliente',
+            'user_id' => 'prohibited',
+            'id_cliente' => ['required', 'integer', \Illuminate\Validation\Rule::exists('registro_clientes', 'id_cliente')->where('user_id', $this->user()->id)],
             'motivo_credito' => 'required|string|max:50',
             'monto_credito' => ['required', 'numeric', 'min:0.01', 'max:999999999999.99', 'decimal:0,2'],
             'fecha_aprobacion' => 'required|date_format:Y-m-d',

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cliente extends Model
 {
+    use \App\Models\Concerns\OwnedByUser;
+
     protected $table = 'registro_clientes';
 
     protected $primaryKey = 'id_cliente';
@@ -48,6 +50,11 @@ class Cliente extends Model
     public function creditos()
     {
         return $this->hasMany(Credito::class, 'id_cliente');
+    }
+
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function getNombreCompletoAttribute(): string

@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Credito extends Model
 {
+    use \App\Models\Concerns\OwnedByUser;
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope('ownedClient', fn ($query) => $query->whereHas('cliente'));
+    }
+
     protected $table = 'registro_creditos';
 
     protected $primaryKey = 'id_credito';
@@ -24,7 +31,6 @@ class Credito extends Model
         'fecha_pago',
         'cantidad_pagos',
         'periodicidad',
-        'user_id',
     ];
 
     protected $casts = [
@@ -37,6 +43,11 @@ class Credito extends Model
     public function cliente()
     {
         return $this->belongsTo(Cliente::class, 'id_cliente');
+    }
+
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function abonos()

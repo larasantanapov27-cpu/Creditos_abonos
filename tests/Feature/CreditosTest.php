@@ -37,6 +37,7 @@ class CreditosTest extends TestCase
         ]);
         $e = DB::table('estados')->insertGetId(['nombre_estado' => 'Estado de México']);
         $m = DB::table('municipios')->insertGetId(['nombre_municipio' => 'Valle de Bravo', 'id_estado' => $e]);
+        $this->actingAs($this->user);
         $this->cliente = Cliente::create([
             'fecha_registro_cliente' => '2026-01-01',
             'nombre' => 'Ana',
@@ -63,10 +64,12 @@ class CreditosTest extends TestCase
             'id_tasa_interes' => DB::table('tasa_intereses')->value('id_tasa_interes'),
             'id_tipo_pago' => DB::table('tipo_pagos')->value('id_tipo_pago'),
         ];
+        auth()->logout();
     }
 
     private function credito(): Credito
     {
+        $this->actingAs($this->user);
         return app(CreditoService::class)->guardar($this->datos, $this->user->id);
     }
 

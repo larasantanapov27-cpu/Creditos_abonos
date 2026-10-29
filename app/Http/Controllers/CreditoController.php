@@ -37,7 +37,7 @@ class CreditoController extends Controller
     {
         return view('creditos.form', [
             'credito' => $credito,
-            'clientes' => Cliente::where('activo', true)->when($credito->exists, fn ($q) => $q->orWhere('id_cliente', $credito->id_cliente))->orderBy('nombre')->get(),
+            'clientes' => Cliente::where(fn ($query) => $query->where('activo', true)->when($credito->exists, fn ($query) => $query->orWhere('id_cliente', $credito->id_cliente)))->orderBy('nombre')->get(),
             'tasas' => DB::table('tasa_intereses')->get(),
             'tipos' => DB::table('tipo_pagos')->get(),
             'bloqueado' => $credito->exists && $credito->abonos()->exists(),

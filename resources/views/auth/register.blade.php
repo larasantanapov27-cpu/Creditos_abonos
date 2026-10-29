@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('title','Crear cuenta')
@@ -13,7 +14,9 @@
                 <br>
                 <span>perspectiva.</span>
             </h1>
+
             <p>Crea tu cuenta de encargado y reúne la información de tu negocio en un solo lugar.</p>
+
             <div class="story-card compact">
                 <x-icon name="check" />
                 <strong>
@@ -23,15 +26,45 @@
                 </strong>
                 <small>Consulta saldos y conserva tus movimientos.</small>
             </div>
+
             <p class="story-foot">Versión académica local · Cuentas de encargado</p>
         </section>
+
         <section class="auth-form">
             <p class="eyebrow">TU NUEVO ESPACIO DE TRABAJO</p>
             <h2>Crea tu cuenta</h2>
             <p class="text-muted">Completa tus datos para comenzar.</p>
+
             <form action="{{ route('register.store') }}" method="POST">
                 @csrf
-                <x-field name="name" label="Nombre completo" autocomplete="name" maxlength="100"/>
+
+                <!-- DATOS PERSONALES -->
+                <div class="row">
+                    <x-field
+                        class="col-md-12"
+                        name="name"
+                        label="Nombre(s)"
+                        autocomplete="given-name"
+                        maxlength="100"
+                    />
+
+                    <x-field
+                        class="col-md-6"
+                        name="apellido_paterno"
+                        label="Apellido paterno"
+                        autocomplete="family-name"
+                        maxlength="100"
+                    />
+
+                    <x-field
+                        class="col-md-6"
+                        name="apellido_materno"
+                        label="Apellido materno"
+                        maxlength="100"
+                    />
+                </div>
+
+                <!-- DATOS DE ACCESO -->
                 <div class="row">
                     <x-field
                         class="col-md-6"
@@ -41,6 +74,7 @@
                         minlength="3"
                         maxlength="50"
                     />
+
                     <x-field
                         class="col-md-6"
                         name="email"
@@ -50,6 +84,8 @@
                         maxlength="255"
                     />
                 </div>
+
+                <!-- CONTRASEÑA -->
                 <div class="password-field">
                     <x-field
                         name="password"
@@ -59,10 +95,18 @@
                         minlength="8"
                         maxlength="72"
                     />
-                    <button type="button" class="password-toggle" data-password="password" aria-pressed="false">
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        data-password="password"
+                        aria-pressed="false"
+                    >
                         Mostrar
                     </button>
                 </div>
+
+                <!-- CONFIRMAR CONTRASEÑA -->
                 <x-field
                     name="password_confirmation"
                     label="Confirma tu contraseña"
@@ -71,11 +115,14 @@
                     minlength="8"
                     maxlength="72"
                 />
+
+                <!-- BOTÓN DE REGISTRO -->
                 <button class="btn btn-primary w-100" type="submit">
                     Crear cuenta
                     <x-icon name="arrow" />
                 </button>
             </form>
+
             <p class="auth-switch">
                 ¿Ya tienes una cuenta?
                 <a href="{{ route('login') }}">Iniciar sesión</a>

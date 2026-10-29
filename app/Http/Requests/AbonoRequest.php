@@ -14,7 +14,12 @@ class AbonoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_credito' => 'required|exists:registro_creditos,id_credito',
+            'user_id' => 'prohibited',
+            'id_credito' => ['bail', 'required', 'integer', function ($attribute, $value, $fail) {
+                if (! \App\Models\Credito::whereKey($value)->exists()) {
+                    $fail('El crédito seleccionado no está disponible.');
+                }
+            }],
             'monto_abono' => 'required|numeric|min:0.01|max:999999999999.99|decimal:0,2',
             'token' => 'required|uuid',
         ];

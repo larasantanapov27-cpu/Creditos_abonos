@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cuota extends Model
 {
+    protected static function booted(): void
+    {
+        static::addGlobalScope('ownedCredit', fn ($query) => $query->whereHas('credito'));
+    }
+
     protected $table = 'cuotas';
 
     protected $primaryKey = 'id';

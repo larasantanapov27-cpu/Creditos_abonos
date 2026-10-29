@@ -58,6 +58,8 @@ class CreditoService
 
     public function guardar(array $d, int $user, ?Credito $credito = null): Credito
     {
+        abort_unless(auth()->check() && auth()->id() === $user, 403);
+        unset($d['user_id']);
         return DB::transaction(function () use ($d, $user, $credito) {
             $cliente = Cliente::whereKey($d['id_cliente'])->lockForUpdate()->firstOrFail();
             if ($credito) {
@@ -106,6 +108,7 @@ class CreditoService
 
     public function abonar(Credito $credito, string $monto, string $token, int $user): Abono
     {
+        abort_unless(auth()->check() && auth()->id() === $user, 403);
         return DB::transaction(function () use ($credito, $monto, $token, $user) {
             $credito = Credito::whereKey($credito->getKey())->lockForUpdate()->firstOrFail();
             $existing = Abono::where('token', $token)->first();
@@ -115,6 +118,9 @@ class CreditoService
                 }
 
                 return $existing;
+            }
+            if (DB::table('registro_abonos')->where('token', $token)->exists()) {
+                throw ValidationException::withMessages(['token' => 'La referencia no está disponible. Genera una nueva operación.']);
             }
             $saldo = self::centavos($credito->saldo);
             $c = self::centavos($monto);
@@ -127,7 +133,6 @@ class CreditoService
                 'monto_abono' => self::decimal($c),
                 'numero_pago' => ((int) $credito->abonos()->max('numero_pago')) + 1,
                 'id_estado_abono' => $estado,
-                'user_id' => $user,
                 'token' => $token,
                 'saldo_resultante' => self::decimal($saldo - $c),
             ]);
@@ -139,6 +144,7 @@ class CreditoService
 
     public function cancelar(Abono $abono, string $motivo, int $user): void
     {
+        abort_unless(auth()->check() && auth()->id() === $user, 403);
         DB::transaction(function () use ($abono, $motivo, $user) {
             Credito::whereKey($abono->id_credito)->lockForUpdate()->firstOrFail();
             $abono = Abono::whereKey($abono->getKey())->lockForUpdate()->firstOrFail();

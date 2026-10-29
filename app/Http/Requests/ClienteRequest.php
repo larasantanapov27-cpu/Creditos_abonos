@@ -22,13 +22,14 @@ class ClienteRequest extends FormRequest
         $id = $this->route('cliente')?->getKey();
 
         return [
+            'user_id' => 'prohibited',
             'nombre' => 'required|string|max:25',
             'apellido_paterno' => 'required|string|max:25',
             'apellido_materno' => 'required|string|max:25',
             'telefono' => [
                 'required',
                 'regex:/^[0-9+ ()-]{7,20}$/',
-                Rule::unique('registro_clientes', 'telefono')->ignore($id, 'id_cliente'),
+                Rule::unique('registro_clientes', 'telefono')->where('user_id', $this->user()->id)->ignore($id, 'id_cliente'),
             ],
             'correo_electronico' => 'required|email|max:50',
             'id_estado' => 'required|exists:estados,id_estado',
@@ -38,7 +39,7 @@ class ClienteRequest extends FormRequest
             'curp' => [
                 'required',
                 'regex:/^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9][0-9]$/',
-                Rule::unique('registro_clientes', 'curp')->ignore($id, 'id_cliente'),
+                Rule::unique('registro_clientes', 'curp')->where('user_id', $this->user()->id)->ignore($id, 'id_cliente'),
             ],
         ];
     }

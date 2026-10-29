@@ -6,6 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Abono extends Model
 {
+    protected static function booted(): void
+    {
+        static::addGlobalScope('ownedCredit', fn ($query) => $query->whereHas('credito'));
+        static::creating(function ($abono) {
+            $credito = Credito::findOrFail($abono->id_credito);
+            $abono->user_id = $credito->user_id;
+        });
+        static::updating(function ($abono) {
+            Credito::findOrFail($abono->getOriginal('id_credito'));
+            $abono->id_credito = $abono->getOriginal('id_credito');
+            $abono->user_id = $abono->getOriginal('user_id');
+        });
+    }
+
     protected $table = 'registro_abonos';
 
     protected $primaryKey = 'id_abono';
@@ -18,7 +32,6 @@ class Abono extends Model
         'monto_abono',
         'numero_pago',
         'id_estado_abono',
-        'user_id',
         'token',
         'saldo_resultante',
         'motivo_cancelacion',
